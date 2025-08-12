@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# DB & Alembic
+dev.db
+alembic/versions/__pycache__/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Docker / logs
+*.log
