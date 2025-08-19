@@ -5,7 +5,6 @@ from datetime import datetime
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.db.base import User
 from app.db.session import Base
 
 
@@ -18,4 +17,4 @@ class Item(Base):
         ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
-    owner: Mapped[User] = relationship("User", back_populates="items")
+    owner: Mapped["User"] = relationship("User", back_populates="items")
