@@ -5,7 +5,8 @@ from app.core.config import settings
 
 
 class Base(DeclarativeBase):
-    pass
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 engine = create_async_engine(settings.database_url, pool_pre_ping=True)

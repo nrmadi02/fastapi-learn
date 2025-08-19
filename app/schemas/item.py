@@ -1,15 +1,36 @@
-from pydantic import BaseModel, Field
+from __future__ import annotations
 
-from app.schemas.common import DBModel
+from datetime import datetime
+
+from pydantic import BaseModel
 
 
-class ItemCreate(BaseModel):
-    title: str = Field(min_length=1, max_length=120)
+class ItemBase(BaseModel):
+    title: str
     description: str | None = None
 
 
-class ItemRead(DBModel):
+class ItemCreate(ItemBase):
+    pass
+
+
+class ItemUpdate(ItemBase):
+    title: str | None = None
+
+
+class ItemInDBBase(BaseModel):
     id: int
-    title: str
-    description: str | None
     owner_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class Item(ItemInDBBase):
+    title: str
+    description: str | None = None
+
+
+class ItemInDB(ItemInDBBase):
+    pass

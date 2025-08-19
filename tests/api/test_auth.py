@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.asyncio
-async def test_register_and_login(client):
+async def test_integration_register_and_login(client):
     r = await client.post(
         "/api/v1/auth/register", json={"email": "u@e.com", "password": "secret123"}
     )

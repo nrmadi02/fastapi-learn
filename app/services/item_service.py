@@ -1,27 +1,30 @@
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.item import Item
 from app.schemas.item import ItemCreate
 
+from app.repositories.item_repository import item_repo
+
 
 class ItemService:
-    def __init__(self, session: AsyncSession):
-        self.session = session
+    async def create_item_for_user(
+        self, db: AsyncSession, *, item_in: ItemCreate, owner_id: int
+    ) -> Item:
+        """
+        Create a new item for a specific user.
+        """
+        # We can't use the generic create method from the repo directly
+        # because we need to inject the owner_id.
+        res = await item_repo.create_for_user(db=db, item_in=item_in, owner_id=owner_id)
+        return res
 
-    async def create(self, owner_id: int, data: ItemCreate) -> Item:
-        item = Item(title=data.title, description=data.description, owner_id=owner_id)
-        self.session.add(item)
-        await self.session.commit()
-        await self.session.refresh(item)
-        return item
-
-    async def list(self, owner_id: int, limit: int, offset: int) -> list[Item]:
-        res = await self.session.execute(
-            select(Item)
-            .where(Item.owner_id == owner_id)
-            .order_by(Item.id)
-            .limit(limit)
-            .offset(offset)
+    async def list(
+        self, db: AsyncSession, owner_id: int, limit: int, offset: int
+    ) -> list[Item]:
+        res = await item_repo.get_by_owner(
+            db=db, owner_id=owner_id, offset=offset, limit=limit
         )
-        return list(res.scalars())
+        return res
+
+
+item_service = ItemService()
