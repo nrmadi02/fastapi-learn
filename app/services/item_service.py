@@ -1,3 +1,4 @@
+from fastapi_pagination import Page
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.item import Item
@@ -19,10 +20,10 @@ class ItemService:
         return res
 
     async def list(
-        self, db: AsyncSession, owner_id: int, limit: int, offset: int
-    ) -> list[Item]:
+        self, db: AsyncSession, owner_id: int, page: int, size: int
+    ) -> Page[Item]:
         res = await item_repo.get_by_owner(
-            db=db, owner_id=owner_id, offset=offset, limit=limit
+            db=db, owner_id=owner_id, page=page, size=size
         )
         return res
 

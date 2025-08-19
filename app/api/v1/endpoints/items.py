@@ -6,6 +6,7 @@ from app.models.user import User
 from app.schemas.item import Item, ItemCreate
 from app.services.item_service import item_service
 from app.utils.pagination import PaginationParams
+from fastapi_pagination import Page, Params
 
 router = APIRouter()
 
@@ -22,13 +23,13 @@ async def create_item(
     return item
 
 
-@router.get("", response_model=list[Item], summary="List my items")
+@router.get("", response_model=Page[Item], summary="List my items")
 async def list_items(
-    page: PaginationParams = Depends(),
+    params: Params = Depends(),
     session: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     items = await item_service.list(
-        db=session, owner_id=current_user.id, offset=page.offset, limit=page.limit
+        db=session, owner_id=current_user.id, page=params.page, size=params.size
     )
     return items

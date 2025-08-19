@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
+from fastapi_pagination import add_pagination
 
 from app.api.v1.routes import api_router
 from app.core.config import settings
@@ -19,6 +20,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
 app.add_middleware(RequestIdMiddleware)
+add_pagination(app)
 
 
 @app.get("/health", tags=["Health"])
